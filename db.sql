@@ -1,0 +1,47 @@
+CREATE DATABASE IF NOT EXISTS saw_project;
+USE saw_project;
+
+CREATE TABLE IF NOT EXISTS users (
+  id INT AUTO_INCREMENT PRIMARY KEY,
+  username VARCHAR(50) NOT NULL UNIQUE,
+  password VARCHAR(255) NOT NULL,
+  nama VARCHAR(100) NOT NULL,
+  role VARCHAR(30) DEFAULT 'kepala_produksi'
+) ENGINE=InnoDB;
+
+CREATE TABLE IF NOT EXISTS supplier (
+  id INT AUTO_INCREMENT PRIMARY KEY,
+  nama_supplier VARCHAR(100) NOT NULL,
+  alamat TEXT NOT NULL,
+  kontak VARCHAR(50) NOT NULL,
+  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+) ENGINE=InnoDB;
+
+CREATE TABLE IF NOT EXISTS kriteria (
+  id INT AUTO_INCREMENT PRIMARY KEY,
+  nama_kriteria VARCHAR(100) NOT NULL,
+  tipe VARCHAR(10) NOT NULL,
+  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+) ENGINE=InnoDB;
+
+CREATE TABLE IF NOT EXISTS bobot_kriteria (
+  id INT AUTO_INCREMENT PRIMARY KEY,
+  kriteria_id INT NOT NULL,
+  nilai_bobot DECIMAL(5,2) NOT NULL,
+  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  FOREIGN KEY (kriteria_id) REFERENCES kriteria(id) ON DELETE CASCADE
+) ENGINE=InnoDB;
+
+CREATE TABLE IF NOT EXISTS penilaian_supplier (
+  id INT AUTO_INCREMENT PRIMARY KEY,
+  supplier_id INT NOT NULL,
+  kriteria_id INT NOT NULL,
+  nilai DECIMAL(10,2) NOT NULL,
+  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  FOREIGN KEY (supplier_id) REFERENCES supplier(id) ON DELETE CASCADE,
+  FOREIGN KEY (kriteria_id) REFERENCES kriteria(id) ON DELETE CASCADE
+) ENGINE=InnoDB;
+
+INSERT INTO users (username, password, nama, role) VALUES
+('admin', '$2y$10$8YO4umHzRwKIQeg0Tece1.wg8qzVxkmn3qhQgTai9LaEzUG.K460K', 'Kepala Produksi', 'kepala_produksi')
+ON DUPLICATE KEY UPDATE username=username;
